@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 160" role="img" aria-label="Valido — Automated Excel Data Auditor">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f2c4c"/>
+      <stop offset="55%" stop-color="#127475"/>
+      <stop offset="100%" stop-color="#1fa3a4"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ikon: kotak membulat + kaca pembesar + centang -->
+  <rect x="8" y="14" width="132" height="132" rx="34" fill="url(#g1)"/>
+  <rect x="8" y="14" width="132" height="132" rx="34" fill="url(#g2)"/>
+  <circle cx="66" cy="72" r="30" fill="none" stroke="#ffffff" stroke-width="11"/>
+  <line x1="88" y1="94" x2="110" y2="116" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M54 72 l9 10 l17 -21" fill="none" stroke="#7ee0d6" stroke-width="9"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Wordmark -->
+  <text x="164" y="86" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="62" font-weight="800" fill="#0f2c4c" letter-spacing="-1.5">Valido</text>
+  <text x="166" y="118" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="19" font-weight="600" fill="#127475" letter-spacing="1.2">
+    AUTOMATED EXCEL DATA AUDITOR
+  </text>
+</svg>

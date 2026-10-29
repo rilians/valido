@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "valido"
+version = "1.0.0"
+description = "Valido — Automated Excel Data Auditor: periksa kualitas file Excel/CSV dengan aturan yang dapat dikonfigurasi dan hasilkan laporan perbaikan."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Valido" }]
+keywords = ["data-quality", "excel", "csv", "audit", "validation", "pandas", "streamlit"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Office/Business :: Financial :: Spreadsheet",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "openpyxl>=3.1",
+    "PyYAML>=6.0",
+    "streamlit>=1.36",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6"]
+
+[project.scripts]
+valido = "valido.cli:main"
+
+[project.urls]
+Homepage = "https://example.com/valido"
+
+[tool.setuptools]
+packages = ["valido"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501", "B008"]

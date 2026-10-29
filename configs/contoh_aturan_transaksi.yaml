@@ -1,0 +1,155 @@
+# =============================================================================
+# Valido — contoh konfigurasi aturan audit untuk dataset transaksi penjualan
+# Jalankan: python cli.py audit examples/data/transaksi_penjualan.xlsx \
+#                       --config configs/contoh_aturan_transaksi.yaml
+# =============================================================================
+meta:
+  name: Audit Transaksi Penjualan
+  version: 1
+  description: Aturan kualitas data untuk tabel transaksi harian tim penjualan.
+
+dataset:
+  sheet: Transaksi        # abaikan / null untuk CSV atau sheet pertama
+  header_row: 0           # 0 = baris pertama file dipakai sebagai header
+  trim_strings: false   # false agar spasi berlebih tetap terdeteksi aturan 'whitespace'
+  skip_empty_rows: true
+
+report:
+  title: Laporan Audit Transaksi Penjualan
+  auditor: Tim Data Quality
+  include_clean_preview: true
+  clean_preview_rows: 200
+
+rules:
+  # ---------------------------------------------------------------- kelengkapan
+  - id: wajib_id_transaksi
+    type: required
+    columns: [ID Transaksi]
+    severity: error
+
+  - id: wajib_pelanggan
+    type: required
+    columns: [Pelanggan]
+    severity: error
+
+  - id: wajib_email
+    type: required
+    columns: [Email]
+    severity: error
+
+  - id: wajib_kota
+    type: required
+    columns: [Kota]
+    severity: error
+
+  # ------------------------------------------------------------------ keunikan
+  - id: unik_id_transaksi
+    type: unique
+    columns: [ID Transaksi]
+    severity: error
+    ignore_case: true
+    ignore_whitespace: true
+
+  - id: duplikat_baris_transaksi
+    type: duplicate
+    label: Duplikat baris transaksi
+    columns: [Pelanggan, Produk, Tanggal, Total]
+    severity: warning
+
+  # -------------------------------------------------------------------- tanggal
+  - id: format_tanggal_transaksi
+    type: date_format
+    columns: [Tanggal]
+    severity: warning
+    formats: ["%Y-%m-%d"]      # kosongkan [] untuk deteksi otomatis format dominan
+    strict: true
+
+  - id: urutan_tanggal_kirim
+    type: date_order
+    columns: [Tanggal, Tanggal Kirim]
+    severity: error
+
+  - id: tanggal_kirim_wajib_bila_selesai
+    type: required_if
+    columns: [Tanggal Kirim]
+    when: "Status.isin(['Dikirim', 'Selesai'])"
+    severity: error
+
+  # --------------------------------------------------------------------- angka
+  - id: qty_rentang
+    type: range
+    columns: [Qty]
+    severity: error
+    min: 1
+    max: 100
+
+  - id: harga_satuan_rentang
+    type: range
+    columns: [Harga Satuan]
+    severity: error
+    min: 1000
+    max: 50000000
+
+  - id: total_tidak_negatif
+    type: range
+    columns: [Total]
+    severity: error
+    min: 0
+
+  - id: total_pencilan
+    type: outlier
+    columns: [Total]
+    severity: warning
+    method: zscore          # iqr (default) atau zscore
+    threshold: 4.0
+
+  # ---------------------------------------------------------------------- teks
+  - id: kategori_baku
+    type: allowed_values
+    columns: [Kategori]
+    severity: error
+    values: [Elektronik, Fashion, Makanan, Rumah Tangga, Kesehatan]
+
+  - id: status_baku
+    type: allowed_values
+    columns: [Status]
+    severity: error
+    values: [Baru, Diproses, Dikirim, Selesai, Dibatalkan]
+    case_sensitive: true      # "dikirim"/"SELESAI" dianggap tidak baku
+
+  - id: email_valid
+    type: pattern
+    columns: [Email]
+    severity: error
+    regex: '^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$'
+    hint: "contoh: nama@perusahaan.co.id"
+
+  - id: telepon_valid
+    type: pattern
+    columns: [Telepon]
+    severity: warning
+    regex: '^(\+62|62|0)8[0-9]{7,12}$'
+    hint: "contoh: 081234567890"
+
+  - id: nama_pelanggan_panjang
+    type: length
+    columns: [Pelanggan]
+    severity: warning
+    min: 3
+    max: 60
+
+  - id: spasi_berlebih
+    type: whitespace
+    columns: [Pelanggan, Kota, Produk, Kategori, Status]
+    severity: info
+
+  # ---------------------------------------------------------------- bisnis
+  - id: total_sesuai_qty_harga
+    type: business_rule
+    columns: [Qty, Harga Satuan, Total]
+    expression: "Total == Qty * `Harga Satuan`"
+    severity: error
+    message: "Total tidak sama dengan Qty × Harga Satuan (aturan: {expression})."
+    suggestion: >-
+      Hitung ulang Total pada baris {row} sebagai Qty × Harga Satuan, atau perbaiki nilai
+      Qty/Harga Satuan bila salah input.

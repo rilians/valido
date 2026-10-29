@@ -1,0 +1,5 @@
+# Valido — dependensi pengembangan & pengujian
+-r requirements.txt
+pytest>=8.0
+pytest-cov>=5.0
+ruff>=0.6

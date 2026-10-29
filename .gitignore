@@ -1,0 +1,26 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Lingkungan virtual
+.venv/
+venv/
+env/
+
+# Hasil audit & laporan (dibuat saat runtime)
+hasil/
+hasil_csv/
+*.log
+uploaded_config.*
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
